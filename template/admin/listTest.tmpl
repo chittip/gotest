@@ -1,0 +1,44 @@
+{{define "root-body"}}
+<div>
+    Admin list
+    <a href="/admin/create">Create News</a>
+    <table class="ui table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>API Name</th>
+                <th>URL Path</th>
+                <th>Method Type</th>
+                <th>URL Param</th>
+                <th>Body</th>                             
+            </tr>
+        </thead>
+        <tbody>            
+            {{range .List}}
+            <tr>
+                <td>{{.ID.Hex}}</td>
+                <td>{{.APIName}}</td>
+                <td>{{.URLPath}}</td>
+                <td>{{.MethodType}}</td>
+                <td>{{.URLParam}}</td>
+                <td>{{.Body}}</td>         
+                <td>
+                    <a class="ui green button" href="/admin/editTest?id={{.ID.Hex}}">Edit</a>
+                    <form method="POST">
+                        <input type="hidden" name="action" value="delete"> 
+                        <input type="hidden" name="id" value="{{.ID.Hex}}">
+                        <button class="ui submit button">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {{end}}
+        </tbody>
+    </table>
+</div>
+{{end}}
+
+{{define "root-script"}}
+{{end}}
+
+{{define "root-style"}}
+{{end}}
