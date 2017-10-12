@@ -1,9 +1,9 @@
 package app
 
 import "net/http"
-import "github.com/chittip/gonews/pkg/view"
+import "github.com/chittip/gotest/pkg/view"
 import "log"
-import "github.com/chittip/gonews/pkg/model"
+import "github.com/chittip/gotest/pkg/model"
 
 func newsView(w http.ResponseWriter, r *http.Request) {
 	id := r.URL.Path[1:]

@@ -2,6 +2,7 @@ package model
 
 import (
 	"fmt"
+	"log"
 	"time"
 
 	"gopkg.in/mgo.v2/bson"
@@ -89,5 +90,21 @@ func UpdateTest(test *Test) error {
 	if err != nil {
 		return err
 	}
+	return nil
+}
+
+// RunTest ...
+func RunTest(test *Test) error {
+	if test.ID == "" {
+		return fmt.Errorf("required id fo test")
+	}
+	log.Println("Run Test ....")
+	log.Println(test)
+	log.Println(test.APIName)
+	log.Println(test.Body)
+	log.Println(test.URLPath)
+	log.Println(test.URLParam)
+	log.Println(test.MethodType)
+
 	return nil
 }

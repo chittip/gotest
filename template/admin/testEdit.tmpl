@@ -1,0 +1,38 @@
+{{define "root-body"}}
+<div>
+    <h1>Create new News</h1>
+    <form class="ui from" method="POST" enctype="multipart/form-data">
+        <div class="field">
+            <label>API Name</label>
+            <input name="apiName" value="{{.APIName}}">
+        </div>
+        <div class="field">
+            <label>URL Path</label>
+            <input name="urlPath" value="{{.URLPath}}">
+        </div>
+        <div class="field">
+            <label>Method Type</label>
+            <input name="methodType" value="{{.MethodType}}">
+        </div>        
+        <div class="field">
+            <label>URL Param</label>
+            <input name="urlParam" value="{{.URLParam}}">
+        </div>         
+        <div class="field">
+            <label>Body</label>
+            <textarea name="body">{{.Body}}</textarea>
+        </div>                        
+        <button class="ui blue submit button" type="submit">Save</button>
+        <a class="ui red button" href="/admin/listTest">Cancel</a>
+    </form>
+</div>
+{{end}}
+
+{{define "root-script"}}
+<script>
+    console.log("index")
+</script>
+{{end}}
+
+{{define "root-style"}}
+{{end}}

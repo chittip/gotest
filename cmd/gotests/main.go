@@ -4,9 +4,9 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/chittip/gonews/pkg/model"
+	"github.com/chittip/gotest/pkg/model"
 
-	"github.com/chittip/gonews/pkg/app"
+	"github.com/chittip/gotest/pkg/app"
 )
 
 const (

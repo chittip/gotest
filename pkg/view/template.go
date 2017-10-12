@@ -21,6 +21,10 @@ var (
 	tpAdminList     = parseTemplate("root.tmpl", "admin/list.tmpl")
 	tpAdminLCreate  = parseTemplate("root.tmpl", "admin/create.tmpl")
 	tpAdminLEdit    = parseTemplate("root.tmpl", "admin/edit.tmpl")
+
+	tpAdminLCreateTest = parseTemplate("root.tmpl", "admin/testCreate.tmpl")
+	tpAdminListTest    = parseTemplate("root.tmpl", "admin/listTest.tmpl")
+	tpAdminLEditTest   = parseTemplate("root.tmpl", "admin/testEdit.tmpl")
 )
 
 // func init() {

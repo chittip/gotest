@@ -24,6 +24,7 @@
                 <td>{{.Body}}</td>         
                 <td>
                     <a class="ui green button" href="/admin/editTest?id={{.ID.Hex}}">Edit</a>
+                    <a class="ui green button" href="/admin/runTest?id={{.ID.Hex}}">Run Test</a>                    
                     <form method="POST">
                         <input type="hidden" name="action" value="delete"> 
                         <input type="hidden" name="id" value="{{.ID.Hex}}">

@@ -16,9 +16,13 @@ func Mount(mux *http.ServeMux) {
 
 	adminMux := http.NewServeMux()
 	adminMux.HandleFunc("/login", adminLogin)
-	adminMux.HandleFunc("/list", adminList)
+	adminMux.HandleFunc("/listTest", adminListTest)
 	adminMux.HandleFunc("/create", adminCreate)
+	adminMux.HandleFunc("/createTest", adminCreateTest)
 	adminMux.HandleFunc("/edit", adminEdit)
+
+	adminMux.HandleFunc("/editTest", adminEditTest)
+	adminMux.HandleFunc("/runTest", adminRunTest)
 
 	mux.Handle("/admin/", http.StripPrefix("/admin", onlyAdmin(adminMux)))
 	// /news/:path

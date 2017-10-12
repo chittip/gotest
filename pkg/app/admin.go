@@ -7,8 +7,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/chittip/gonews/pkg/model"
-	"github.com/chittip/gonews/pkg/view"
+	"github.com/chittip/gotest/pkg/model"
+	"github.com/chittip/gotest/pkg/view"
 )
 
 func adminLogin(w http.ResponseWriter, r *http.Request) {
@@ -101,7 +101,6 @@ func adminEdit(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/admin/list", http.StatusSeeOther)
 		return
 	}
-
 	view.AdminEdit(w, n)
 }
 
