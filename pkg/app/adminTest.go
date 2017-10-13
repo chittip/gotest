@@ -129,7 +129,7 @@ func adminEditTest(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		http.Redirect(w, r, "/admin/list", http.StatusSeeOther)
+		http.Redirect(w, r, "/admin/listTest", http.StatusSeeOther)
 		return
 	}
 	view.AdminEditTest(w, test)

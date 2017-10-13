@@ -1,9 +1,15 @@
 package model
 
 import (
+	"context"
 	"fmt"
+	"io/ioutil"
 	"log"
+	"net/http"
+	"strings"
 	"time"
+
+	"github.com/tidwall/gjson"
 
 	"gopkg.in/mgo.v2/bson"
 )
@@ -105,6 +111,64 @@ func RunTest(test *Test) error {
 	log.Println(test.URLPath)
 	log.Println(test.URLParam)
 	log.Println(test.MethodType)
+	// https://blog.cloudflare.com/the-complete-guide-to-golang-net-http-timeouts/
 
+	if test.MethodType == "GET" {
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
+		req, _ := http.NewRequest(test.MethodType, test.URLPath, nil)
+		req = req.WithContext(ctx)
+
+		resp, err := http.DefaultClient.Do(req)
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer resp.Body.Close()
+		body, err := ioutil.ReadAll(resp.Body)
+
+		if err != nil {
+			panic(err.Error())
+		}
+
+		log.Println(resp.Status)
+		log.Println(body)
+		m, ok := gjson.Parse(string(body[:])).Value().(map[string]interface{})
+		if !ok {
+			log.Println("- error cannot ...")
+		} else {
+			// log.Println(m)
+			for key, value := range m {
+				fmt.Println("Key:", key, "Value:", value)
+			}
+		}
+	} else if test.MethodType == "POST" {
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
+		req, _ := http.NewRequest(test.MethodType, test.URLPath, strings.NewReader(test.Body))
+		req = req.WithContext(ctx)
+
+		resp, err := http.DefaultClient.Do(req)
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer resp.Body.Close()
+		body, err := ioutil.ReadAll(resp.Body)
+
+		if err != nil {
+			panic(err.Error())
+		}
+
+		log.Println(resp.Status)
+		log.Println(body)
+		m, ok := gjson.Parse(string(body[:])).Value().(map[string]interface{})
+		if !ok {
+			log.Println("- error cannot ...")
+		} else {
+			// log.Println(m)
+			for key, value := range m {
+				fmt.Println("Key:", key, "Value:", value)
+			}
+		}
+	}
 	return nil
 }
