@@ -14,7 +14,13 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
-// Test type
+// Test ...
+/*
+{
+	httpStatusCode : "200"
+	httpBody : ""
+}
+*/
 type Test struct {
 	ID         bson.ObjectId `bson:"_id"`
 	APIName    string
@@ -22,8 +28,17 @@ type Test struct {
 	MethodType string
 	URLParam   string
 	Body       string
+	Expected   string
 	CreateAt   time.Time `bson:"createAt"`
 	UpdatedAt  time.Time `bson:"updateAt"`
+}
+
+// ResultTest ...
+type ResultTest struct {
+	Name     string
+	Expected string
+	Actual   string
+	Pass     bool
 }
 
 // CreateTest ...
@@ -99,6 +114,67 @@ func UpdateTest(test *Test) error {
 	return nil
 }
 
+// Vaildate ...
+func (test *Test) Vaildate(actual string) (ResultTest, error) {
+	expectedhttpStatusCoactualde := gjson.Get(test.Expected, "httpStatusCode")
+	actualhttpStatusCode := gjson.Get(actual, "httpStatusCode")
+	if expectedhttpStatusCoactualde != actualhttpStatusCode {
+		result := ResultTest{
+			Name:     "httpStausCode invalid",
+			Expected: expectedhttpStatusCoactualde.String(),
+			Actual:   actualhttpStatusCode.String(),
+			Pass:     false,
+		}
+		return result, nil
+	}
+	result := ResultTest{
+		Name:     "httpStausCode invalid",
+		Expected: expectedhttpStatusCoactualde.String(),
+		Actual:   actualhttpStatusCode.String(),
+		Pass:     true,
+	}
+	return result, nil
+}
+
+func httpRequest(url string, methodType string, body string) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	var req *http.Request
+
+	if len(body) > 0 {
+		req, _ = http.NewRequest(methodType, url, nil)
+	} else {
+		req, _ = http.NewRequest(methodType, url, strings.NewReader(body))
+	}
+
+	req = req.WithContext(ctx)
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		log.Fatal(err)
+		return err
+	}
+	defer resp.Body.Close()
+	resbody, err := ioutil.ReadAll(resp.Body)
+
+	if err != nil {
+		panic(err.Error())
+	}
+
+	log.Println(resp.Status)
+	log.Println(resbody)
+	m, ok := gjson.Parse(string(resbody[:])).Value().(map[string]interface{})
+	if !ok {
+		log.Println("- error cannot ...")
+	} else {
+		// log.Println(m)
+		for key, value := range m {
+			fmt.Println("Key:", key, "Value:", value)
+		}
+	}
+	return nil
+}
+
 // RunTest ...
 func RunTest(test *Test) error {
 	if test.ID == "" {
@@ -114,60 +190,14 @@ func RunTest(test *Test) error {
 	// https://blog.cloudflare.com/the-complete-guide-to-golang-net-http-timeouts/
 
 	if test.MethodType == "GET" {
-		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-		defer cancel()
-		req, _ := http.NewRequest(test.MethodType, test.URLPath, nil)
-		req = req.WithContext(ctx)
-
-		resp, err := http.DefaultClient.Do(req)
+		err := httpRequest(test.URLPath, test.MethodType, "")
 		if err != nil {
-			log.Fatal(err)
-		}
-		defer resp.Body.Close()
-		body, err := ioutil.ReadAll(resp.Body)
-
-		if err != nil {
-			panic(err.Error())
-		}
-
-		log.Println(resp.Status)
-		log.Println(body)
-		m, ok := gjson.Parse(string(body[:])).Value().(map[string]interface{})
-		if !ok {
-			log.Println("- error cannot ...")
-		} else {
-			// log.Println(m)
-			for key, value := range m {
-				fmt.Println("Key:", key, "Value:", value)
-			}
+			return err
 		}
 	} else if test.MethodType == "POST" {
-		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-		defer cancel()
-		req, _ := http.NewRequest(test.MethodType, test.URLPath, strings.NewReader(test.Body))
-		req = req.WithContext(ctx)
-
-		resp, err := http.DefaultClient.Do(req)
+		err := httpRequest(test.URLPath, test.MethodType, test.Body)
 		if err != nil {
-			log.Fatal(err)
-		}
-		defer resp.Body.Close()
-		body, err := ioutil.ReadAll(resp.Body)
-
-		if err != nil {
-			panic(err.Error())
-		}
-
-		log.Println(resp.Status)
-		log.Println(body)
-		m, ok := gjson.Parse(string(body[:])).Value().(map[string]interface{})
-		if !ok {
-			log.Println("- error cannot ...")
-		} else {
-			// log.Println(m)
-			for key, value := range m {
-				fmt.Println("Key:", key, "Value:", value)
-			}
+			return err
 		}
 	}
 	return nil

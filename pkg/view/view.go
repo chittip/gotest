@@ -66,7 +66,12 @@ func AdminCreateTest(w http.ResponseWriter, data interface{}) {
 	render(tpAdminLCreateTest, w, data)
 }
 
-// AdminCreateTest ...
+// AdminEditTest  ...
 func AdminEditTest(w http.ResponseWriter, data interface{}) {
-	render(tpAdminLEditTest, w, data)
+	render(tpAdminEditTest, w, data)
+}
+
+// AdminRunTest ...
+func AdminResultTest(w http.ResponseWriter, data interface{}) {
+	render(tpAdminResultTest, w, data)
 }

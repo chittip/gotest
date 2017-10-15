@@ -24,7 +24,8 @@ var (
 
 	tpAdminLCreateTest = parseTemplate("root.tmpl", "admin/testCreate.tmpl")
 	tpAdminListTest    = parseTemplate("root.tmpl", "admin/listTest.tmpl")
-	tpAdminLEditTest   = parseTemplate("root.tmpl", "admin/testEdit.tmpl")
+	tpAdminEditTest    = parseTemplate("root.tmpl", "admin/testEdit.tmpl")
+	tpAdminResultTest  = parseTemplate("root.tmpl", "admin/resultTest.tmpl")
 )
 
 // func init() {

@@ -10,7 +10,8 @@
                 <th>URL Path</th>
                 <th>Method Type</th>
                 <th>URL Param</th>
-                <th>Body</th>                             
+                <th>Body</th>    
+                <th>Expected</th>
             </tr>
         </thead>
         <tbody>            
@@ -22,6 +23,7 @@
                 <td>{{.MethodType}}</td>
                 <td>{{.URLParam}}</td>
                 <td>{{.Body}}</td>         
+                <td>{{.Expected}}</td>         
                 <td>
                     <a class="ui green button" href="/admin/editTest?id={{.ID.Hex}}">Edit</a>
                     <a class="ui green button" href="/admin/runTest?id={{.ID.Hex}}">Run Test</a>                    
@@ -30,7 +32,7 @@
                         <input type="hidden" name="id" value="{{.ID.Hex}}">
                         <button class="ui submit button">Delete</button>
                     </form>
-                </td>
+                </td>                
             </tr>
             {{end}}
         </tbody>
