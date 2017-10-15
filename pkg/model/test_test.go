@@ -34,3 +34,18 @@ func TestValidate2(t *testing.T) {
 		t.Errorf("expected faile %v", resultTest.Actual)
 	}
 }
+
+// TestValidate3 ...
+func TestValidate3(t *testing.T) {
+	var test = Test{
+		Expected: ` { "httpStatusCode" : "200" , "httpBody" : "" }`,
+	}
+	log.Println(test)
+	resultTest, _ := test.Vaildate(` { "httpStatusCode" : "201"  }`)
+	log.Println(resultTest.Pass)
+	if resultTest.Pass == true {
+		t.Errorf("expected faile %v", resultTest)
+		t.Errorf("expected faile %v", resultTest.Expected)
+		t.Errorf("expected faile %v", resultTest.Actual)
+	}
+}

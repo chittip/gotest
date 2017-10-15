@@ -50,6 +50,7 @@ func adminCreateTest(w http.ResponseWriter, r *http.Request) {
 			MethodType: r.FormValue("methodType"),
 			URLParam:   r.FormValue("urlParam"),
 			Body:       r.FormValue("body"),
+			Expected:   r.FormValue("Expected"),
 		}
 
 		// if file, fileHeader, err := r.FormFile("image"); err == nil {
@@ -108,6 +109,7 @@ func adminEditTest(w http.ResponseWriter, r *http.Request) {
 		test.MethodType = r.FormValue("methodType")
 		test.URLParam = r.FormValue("urlParam")
 		test.Body = r.FormValue("body")
+		test.Expected = r.FormValue("Expected")
 
 		// if file, fileHeader, err := r.FormFile("image"); err == nil {
 		// 	defer file.Close()
