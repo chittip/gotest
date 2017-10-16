@@ -41,6 +41,12 @@ type ResultTest struct {
 	Pass     bool
 }
 
+// RequestResult ...
+type RequestResult struct {
+	HTTPStatusCode string
+	Body           string
+}
+
 // CreateTest ...
 func CreateTest(test Test) error {
 	test.ID = bson.NewObjectId()
@@ -136,7 +142,29 @@ func (test *Test) Vaildate(actual string) (ResultTest, error) {
 	return result, nil
 }
 
-func httpRequest(url string, methodType string, body string) error {
+// VaildateResult ...
+func (test *Test) VaildateResult(actual *RequestResult) (ResultTest, error) {
+	expectedhttpStatusCoactualde := gjson.Get(test.Expected, "httpStatusCode")
+
+	if expectedhttpStatusCoactualde.String() != actual.HTTPStatusCode {
+		result := ResultTest{
+			Name:     "httpStausCode invalid",
+			Expected: expectedhttpStatusCoactualde.String(),
+			Actual:   actual.HTTPStatusCode,
+			Pass:     false,
+		}
+		return result, nil
+	}
+	result := ResultTest{
+		Name:     "httpStausCode invalid",
+		Expected: expectedhttpStatusCoactualde.String(),
+		Actual:   actual.HTTPStatusCode,
+		Pass:     true,
+	}
+	return result, nil
+}
+
+func httpRequest(url string, methodType string, body string) (*RequestResult, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	var req *http.Request
@@ -152,7 +180,7 @@ func httpRequest(url string, methodType string, body string) error {
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		log.Fatal(err)
-		return err
+		return nil, err
 	}
 	defer resp.Body.Close()
 	resbody, err := ioutil.ReadAll(resp.Body)
@@ -172,13 +200,17 @@ func httpRequest(url string, methodType string, body string) error {
 			fmt.Println("Key:", key, "Value:", value)
 		}
 	}
-	return nil
+	rr := RequestResult{
+		HTTPStatusCode: resp.Status,
+		Body:           string(resbody[:]),
+	}
+	return &rr, nil
 }
 
 // RunTest ...
-func RunTest(test *Test) error {
+func RunTest(test *Test) (*ResultTest, error) {
 	if test.ID == "" {
-		return fmt.Errorf("required id fo test")
+		return nil, fmt.Errorf("required id fo test")
 	}
 	log.Println("Run Test ....")
 	log.Println(test)
@@ -188,17 +220,19 @@ func RunTest(test *Test) error {
 	log.Println(test.URLParam)
 	log.Println(test.MethodType)
 	// https://blog.cloudflare.com/the-complete-guide-to-golang-net-http-timeouts/
-
+	var rr *RequestResult
+	var err error
 	if test.MethodType == "GET" {
-		err := httpRequest(test.URLPath, test.MethodType, "")
+		rr, err = httpRequest(test.URLPath, test.MethodType, "")
 		if err != nil {
-			return err
+			return nil, err
 		}
 	} else if test.MethodType == "POST" {
-		err := httpRequest(test.URLPath, test.MethodType, test.Body)
+		rr, err = httpRequest(test.URLPath, test.MethodType, test.Body)
 		if err != nil {
-			return err
+			return nil, err
 		}
 	}
-	return nil
+	rt, err := test.VaildateResult(rr)
+	return &rt, err
 }

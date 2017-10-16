@@ -1,6 +1,7 @@
 package app
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/chittip/gotest/pkg/model"
@@ -85,7 +86,9 @@ func adminRunTest(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	err = model.RunTest(test)
+	var rt *model.ResultTest
+	rt, err = model.RunTest(test)
+	log.Println(rt.Pass)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
